@@ -6,6 +6,7 @@ public class AsciiCanvas {
 
 	private static final char SPACE = ' ';
 	private static final char CORNER = '+';
+	private static final char JOINT = '+';
 
 	private final String[] lines;
 
@@ -23,6 +24,10 @@ public class AsciiCanvas {
 
 	public boolean isCorner(Point p) {
 		return charAt(p) == CORNER;
+	}
+
+	public boolean isDistanceJoint(Point p) {
+		return charAt(p) == JOINT;
 	}
 
 	public boolean isChar(Point p, char c) {
@@ -65,5 +70,27 @@ public class AsciiCanvas {
 	@Override
 	public String toString() {
 		return String.join("\n", lines);
+	}
+
+	public Point find(char ch) {
+		for (int y = 0; y < lines.length; y++) {
+			final int x = lines[y].indexOf(ch);
+			if (x != -1) {
+				return new Point(x, y);
+			}
+		}
+		return null;
+	}
+
+	public String line(int y) {
+		return lines[y];
+	}
+
+	public String transposedColumn(int x) {
+		final StringBuilder sb = new StringBuilder();
+		for (String line : lines) {
+			sb.append(line.charAt(x));
+		}
+		return sb.toString();
 	}
 }

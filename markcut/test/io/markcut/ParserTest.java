@@ -1,17 +1,10 @@
 package io.markcut;
 
-import static io.markcut.Direction.DOWN;
-import static io.markcut.Direction.WEST;
 import static org.junit.Assert.assertEquals;
-import io.markcut.AsciiCanvas;
-import io.markcut.Direction;
-import io.markcut.Distance;
-import io.markcut.Parser;
-import io.markcut.Point;
-import io.markcut.Shape;
 import io.markcut.Distance.Axis;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -109,50 +102,56 @@ public class ParserTest {
 	}
 
 	@Test
-	public void dimension_horizontal_line() {
+	public void horizontal_dimension_one_digit() {
 		String line1 = "< 2 >";
-		assertEquals(new Distance(Axis.HORIZONTAL, 0, 4, "2"), parseDistance(line1));
+		assertEquals(distances(new Distance(Axis.HORIZONTAL, 0, 4, "2")), parseDistance(line1));
 	}
 
 	@Test
-	public void dimension_horizontal_line_bis() {
+	public void horizontal_dimension_several_digits() {
 		String line1 = "< 12.50 >  ";
-		assertEquals(new Distance(Axis.HORIZONTAL, 0, 8, "12.50"), parseDistance(line1));
+		assertEquals(distances(new Distance(Axis.HORIZONTAL, 0, 8, "12.50")), parseDistance(line1));
+	}
+
+	private List<Distance> distances(Distance... distances) {
+		return Arrays.asList(distances);
 	}
 
 	@Test
-	public void dimension_vertical_line() {
+	public void vertical_dimension_single_digit() {
 		String line1 = "^";
 		String line2 = " ";
 		String line3 = "5";
 		String line4 = " ";
 		String line5 = "v";
 
-		assertEquals(new Distance(Axis.VERTICAL, 0, 4, "5"), parseDistance(line1, line2, line3, line4, line5));
+		assertEquals(distances(new Distance(Axis.VERTICAL, 0, 4, "5")),
+				parseDistance(line1, line2, line3, line4, line5));
 	}
 
-	private Distance parseDistance(String... lines) {
-		final AsciiCanvas canvas = new AsciiCanvas(lines);
-		final Point origin = Point.ZERO;
+	@Test
+	public void vertical_multi_dimension() {
+		String line1 = " ^";
+		String line2 = " 3";
+		String line3 = " +";
+		String line4 = "  ";
+		String line5 = " 2";
+		String line6 = " v";
 
-		final Axis axis = canvas.isChar(origin, '<') ? Axis.HORIZONTAL : Axis.VERTICAL;
-		final Direction dir = axis == Axis.HORIZONTAL ? WEST : DOWN;
-		final char closingChar = axis == Axis.HORIZONTAL ? '>' : 'v';
+		assertEquals(distances(new Distance(Axis.VERTICAL, 0, 2, "3"), new Distance(Axis.VERTICAL, 2, 5, "2")),
+				parseDistance(line1, line2, line3, line4, line5, line6));
+	}
 
-		int from = 0;
-		int to = 0;
-		Point p = origin;
-		from = dir.coordinate(p);
-		while (!canvas.isChar(p, closingChar)) {
-			p = dir.move(p);
-		}
-		to = dir.coordinate(p);
-		if (dir == WEST) {
-			final String size = lines[dir.coordinate(origin)].substring(from + 1, to - 1).trim();
-			return new Distance(Axis.HORIZONTAL, from, to, size);
-		}
-		final String size = lines[lines.length / 2].substring(0, 1);
-		return new Distance(Axis.VERTICAL, from, to, size);
+	@Test
+	public void horizontal_multi_dimension() {
+		String line1 = "< 12.50 +  4.75  >  ";
+		assertEquals(
+				distances(new Distance(Axis.HORIZONTAL, 0, 8, "12.50"), new Distance(Axis.HORIZONTAL, 8, 17, "4.75")),
+				parseDistance(line1));
+	}
+
+	private final static List<Distance> parseDistance(String... lines) {
+		return new Parser().parseDistances(new AsciiCanvas(lines));
 	}
 
 	private static Shape points(Point... points) {

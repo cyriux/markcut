@@ -37,10 +37,21 @@ public class AsciiCanvasTest {
 	@Test
 	public void isCorner() {
 		final AsciiCanvas canvas = new AsciiCanvas("+-+ ", "+-+");
-		System.out.println(canvas);
 		assertTrue(canvas.isCorner(Point.ZERO));
 		assertFalse(canvas.isCorner(new Point(1, 0)));
 		assertTrue(canvas.isCorner(new Point(2, 0)));
+	}
+
+	@Test
+	public void find() {
+		final AsciiCanvas canvas = new AsciiCanvas("         ", "  +-+ ", "      ", "    <  >");
+		assertEquals(new Point(4, 3), canvas.find('<'));
+	}
+
+	@Test
+	public void transposedColumn() {
+		final AsciiCanvas canvas = new AsciiCanvas(" ^", "   ", "      ", " v  ");
+		assertEquals("^  v", canvas.transposedColumn(1));
 	}
 
 }
