@@ -49,8 +49,15 @@ public class AsciiCanvasTest {
 	}
 
 	@Test
+	public void find_first_corner() {
+		String line1 = "  +----+";
+		String line2 = "+-+    |";
+		assertEquals(new Point(2, 0), new AsciiCanvas(line1, line2).find('+'));
+	}
+
+	@Test
 	public void transposedColumn() {
-		final AsciiCanvas canvas = new AsciiCanvas(" ^", "   ", "      ", " v  ");
+		final AsciiCanvas canvas = new AsciiCanvas(" ^", "", "      ", " v  ");
 		assertEquals("^  v", canvas.transposedColumn(1));
 	}
 

@@ -89,7 +89,7 @@ public class AsciiCanvas {
 	public String transposedColumn(int x) {
 		final StringBuilder sb = new StringBuilder();
 		for (String line : lines) {
-			sb.append(line.charAt(x));
+			sb.append(x < line.length() ? line.charAt(x) : ' ');
 		}
 		return sb.toString();
 	}
