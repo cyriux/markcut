@@ -1,5 +1,8 @@
 package io.markcut;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Distance {
 
 	public enum Axis {
@@ -10,6 +13,10 @@ public class Distance {
 	private final int from;
 	private final int to;
 	private final String size;
+
+	public final static List<Distance> distances(Distance... distances) {
+		return Arrays.asList(distances);
+	}
 
 	public Distance(Axis axis, int from, int to, String size) {
 		this.axis = axis;

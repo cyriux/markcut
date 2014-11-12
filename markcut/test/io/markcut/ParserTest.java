@@ -1,5 +1,6 @@
 package io.markcut;
 
+import static io.markcut.Distance.distances;
 import static org.junit.Assert.assertEquals;
 import io.markcut.Distance.Axis;
 
@@ -93,12 +94,18 @@ public class ParserTest {
 	}
 
 	@Test
-	@Ignore("need to check space OR non expected character")
+	@Ignore("need to check space OR non expected character '-'")
 	public void rectange5x2_top_right_hole() {
 		String line1 = "+----+";
 		String line2 = "|    ++";
 		String line3 = "+-----+";
 		assertEquals(points(pt(0, 0), pt(5, 0), pt(5, 1), pt(6, 1), pt(6, 2), pt(0, 2)), parse(line1, line2, line3));
+	}
+
+	@Test
+	public void no_dimension_line() {
+		String line1 = "  +----+  ";
+		assertEquals(distances(), parseDistance(line1));
 	}
 
 	@Test
@@ -111,10 +118,6 @@ public class ParserTest {
 	public void horizontal_dimension_several_digits() {
 		String line1 = "< 12.50 >  ";
 		assertEquals(distances(new Distance(Axis.HORIZONTAL, 0, 8, "12.50")), parseDistance(line1));
-	}
-
-	private List<Distance> distances(Distance... distances) {
-		return Arrays.asList(distances);
 	}
 
 	@Test
