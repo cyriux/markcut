@@ -1,11 +1,9 @@
 package io.markcut;
 
-import static io.markcut.Distance.distances;
 import static org.junit.Assert.assertEquals;
-import io.markcut.Distance.Axis;
+import io.markcut.DimensionLine.Axis;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -102,22 +100,30 @@ public class ParserTest {
 		assertEquals(points(pt(0, 0), pt(5, 0), pt(5, 1), pt(6, 1), pt(6, 2), pt(0, 2)), parse(line1, line2, line3));
 	}
 
+	public final static DimensionLine horizontalDimensionLine(Distance... distances) {
+		return new DimensionLine(Axis.HORIZONTAL, distances);
+	}
+
+	public final static DimensionLine verticalDimensionLine(Distance... distances) {
+		return new DimensionLine(Axis.VERTICAL, distances);
+	}
+
 	@Test
 	public void no_dimension_line() {
 		String line1 = "  +----+  ";
-		assertEquals(distances(), parseDistance(line1));
+		assertEquals(horizontalDimensionLine(), parseDistance(line1));
 	}
 
 	@Test
 	public void horizontal_dimension_one_digit() {
 		String line1 = "< 2 >";
-		assertEquals(distances(new Distance(Axis.HORIZONTAL, 0, 4, "2")), parseDistance(line1));
+		assertEquals(horizontalDimensionLine(new Distance(0, 4, "2")), parseDistance(line1));
 	}
 
 	@Test
 	public void horizontal_dimension_several_digits() {
 		String line1 = "< 12.50 >  ";
-		assertEquals(distances(new Distance(Axis.HORIZONTAL, 0, 8, "12.50")), parseDistance(line1));
+		assertEquals(horizontalDimensionLine(new Distance(0, 8, "12.50")), parseDistance(line1));
 	}
 
 	@Test
@@ -128,8 +134,7 @@ public class ParserTest {
 		String line4 = " ";
 		String line5 = "v";
 
-		assertEquals(distances(new Distance(Axis.VERTICAL, 0, 4, "5")),
-				parseDistance(line1, line2, line3, line4, line5));
+		assertEquals(verticalDimensionLine(new Distance(0, 4, "5")), parseVDistance(line1, line2, line3, line4, line5));
 	}
 
 	@Test
@@ -141,20 +146,23 @@ public class ParserTest {
 		String line5 = " 2";
 		String line6 = " v";
 
-		assertEquals(distances(new Distance(Axis.VERTICAL, 0, 2, "3"), new Distance(Axis.VERTICAL, 2, 5, "2")),
-				parseDistance(line1, line2, line3, line4, line5, line6));
+		assertEquals(verticalDimensionLine(new Distance(0, 2, "3"), new Distance(2, 5, "2")),
+				parseVDistance(line1, line2, line3, line4, line5, line6));
 	}
 
 	@Test
 	public void horizontal_multi_dimension() {
 		String line1 = "< 12.50 +  4.75  >  ";
-		assertEquals(
-				distances(new Distance(Axis.HORIZONTAL, 0, 8, "12.50"), new Distance(Axis.HORIZONTAL, 8, 17, "4.75")),
+		assertEquals(horizontalDimensionLine(new Distance(0, 8, "12.50"), new Distance(8, 17, "4.75")),
 				parseDistance(line1));
 	}
 
-	private final static List<Distance> parseDistance(String... lines) {
-		return new Parser().parseDistances(new AsciiCanvas(lines));
+	private final static DimensionLine parseDistance(String... lines) {
+		return new Parser().parseHDistances(new AsciiCanvas(lines));
+	}
+
+	private final static DimensionLine parseVDistance(String... lines) {
+		return new Parser().parseVDistances(new AsciiCanvas(lines));
 	}
 
 	private static Shape points(Point... points) {

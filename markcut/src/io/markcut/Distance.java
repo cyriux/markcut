@@ -1,32 +1,20 @@
 package io.markcut;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class Distance {
 
-	public enum Axis {
-		HORIZONTAL, VERTICAL;
-	}
-
-	private final Axis axis;
 	private final int from;
 	private final int to;
-	private final String size;
+	private final String featureSize;
+	private final Double size;
 
-	public final static List<Distance> distances(Distance... distances) {
-		return Arrays.asList(distances);
-	}
-
-	public Distance(Axis axis, int from, int to, String size) {
-		this.axis = axis;
+	public Distance(int from, int to, String featureSize) {
 		this.from = from;
 		this.to = to;
-		this.size = size;
-	}
-
-	public Axis axis() {
-		return axis;
+		this.featureSize = featureSize.trim();
+		this.size = tryParse(featureSize);
+		if (size != null && size <= 0) {
+			throw new IllegalArgumentException("Size must be strictly positive");
+		}
 	}
 
 	public int from() {
@@ -37,13 +25,29 @@ public class Distance {
 		return to;
 	}
 
-	public String size() {
+	public double size() {
 		return size;
+	}
+
+	public String featureSize() {
+		return featureSize;
+	}
+
+	private static final Double tryParse(String featureSize) {
+		try {
+			return Double.parseDouble(featureSize);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	public boolean hasVariable() {
+		return size == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return (int) (axis.hashCode() + axis.hashCode() + 31 * size.hashCode() + to);
+		return (int) (31 * size.hashCode() + to);
 	}
 
 	@Override
@@ -58,11 +62,12 @@ public class Distance {
 			return false;
 		}
 		final Distance other = (Distance) obj;
-		return axis == other.axis && from == other.from && to == other.to && size.equals(other.size);
+		return from == other.from && to == other.to && size.equals(other.size);
 	}
 
 	@Override
 	public String toString() {
-		return axis.name().substring(0, 1) + "[" + from + " - " + to + "]=" + size;
+		return "Distance from: " + from + " to: " + to + " of size: " + size;
 	}
+
 }
