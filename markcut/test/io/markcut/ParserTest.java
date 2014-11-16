@@ -3,7 +3,12 @@ package io.markcut;
 import static org.junit.Assert.assertEquals;
 import io.markcut.DimensionLine.Axis;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -157,6 +162,16 @@ public class ParserTest {
 				parseDistance(line1));
 	}
 
+	@Test
+	public void parseGrid() {
+		final DimensionLine h = new DimensionLine(Axis.HORIZONTAL, new Distance(4, 8, "7"), new Distance(8, 12, "5"),
+				new Distance(12, 16, "7"));
+		final DimensionLine v = new DimensionLine(Axis.VERTICAL, new Distance(1, 3, "6"), new Distance(3, 5, "3"));
+		final Grid grid = new Grid(h, v);
+		final List<String> lines = readAllLines("grid.txt");
+		assertEquals(grid, new Parser().parseGrid(new AsciiCanvas(lines)));
+	}
+
 	private final static DimensionLine parseDistance(String... lines) {
 		return new Parser().parseHDistances(new AsciiCanvas(lines));
 	}
@@ -179,7 +194,29 @@ public class ParserTest {
 
 	private Shape parse(Point origin, String... lines) {
 		final AsciiCanvas canvas = new AsciiCanvas(lines);
-		return new Parser().parse(canvas, origin);
+		return new Parser().parseShape(canvas, origin);
 	}
 
+	/**
+	 * @return A String that represents the content of the file
+	 */
+	public static String readFile(final String filename) {
+		return String.join("\n", readAllLines(filename));
+	}
+
+	public static List<String> readAllLines(final String filename) {
+		final Class<? extends ParserTest> clazz = ParserTest.class;
+		final List<String> lines = new ArrayList<String>();
+		try {
+			final BufferedReader in = new BufferedReader(new InputStreamReader(clazz.getResourceAsStream(filename)));
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				lines.add(line);
+			}
+			in.close();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+		return lines;
+	}
 }

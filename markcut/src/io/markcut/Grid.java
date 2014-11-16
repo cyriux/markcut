@@ -49,4 +49,9 @@ public class Grid {
 		return h.equals(other.h) && v.equals(other.v);
 	}
 
+	@Override
+	public String toString() {
+		return "Grid\nhorizontal: " + h + "\nvertical: " + v;
+	}
+
 }

@@ -15,7 +15,7 @@ public class SvgRenderer {
 	final String OPEN_PATH = "<path class=\"fil0 str0\" d=\"";
 	final String CLOSE_PATH = "\"/>";
 
-	String FOOTER = "\n\n</svg>\n";
+	String FOOTER = "\n\n</svg>";
 
 	public String render(Shape shape) {
 		return HEADER + DEBUG_STYLE + OPEN_PATH + toPath(shape) + CLOSE_PATH + FOOTER + "\n";

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Parser {
 
-	public Shape parse(final AsciiCanvas canvas, Point origin) {
+	public Shape parseShape(final AsciiCanvas canvas, Point origin) {
 		final List<Point> points = new ArrayList<Point>();
 		Point p = origin;
 		Direction dir = WEST;
@@ -60,5 +60,11 @@ public class Parser {
 			}
 		}
 		return distances;
+	}
+
+	public Grid parseGrid(AsciiCanvas canvas) {
+		final DimensionLine h = parseHDistances(canvas);
+		final DimensionLine v = parseVDistances(canvas);
+		return new Grid(h, v);
 	}
 }
