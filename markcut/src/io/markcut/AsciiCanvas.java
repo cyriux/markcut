@@ -1,8 +1,11 @@
 package io.markcut;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-public class AsciiCanvas {
+public class AsciiCanvas implements Iterable<String> {
 
 	private static final char SPACE = ' ';
 	private static final char CORNER = '+';
@@ -93,4 +96,44 @@ public class AsciiCanvas {
 		}
 		return sb.toString();
 	}
+
+	public AsciiCanvas subSection(String delimiter) {
+		final List<String> sub = new ArrayList<String>();
+		boolean inSection = false;
+		for (String line : lines) {
+			if (inSection) {
+				sub.add(line);
+			}
+			if (line.startsWith(delimiter)) {
+				inSection = true;
+			}
+		}
+		return new AsciiCanvas(sub);
+	}
+
+	@Override
+	public Iterator<String> iterator() {
+		return Arrays.asList(lines).iterator();
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(lines);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof AsciiCanvas)) {
+			return false;
+		}
+		AsciiCanvas other = (AsciiCanvas) obj;
+		return Arrays.equals(lines, other.lines);
+	}
+
 }

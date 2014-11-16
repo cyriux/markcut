@@ -4,7 +4,10 @@ import static io.markcut.Direction.WEST;
 import io.markcut.DimensionLine.Axis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class Parser {
 
@@ -66,5 +69,19 @@ public class Parser {
 		final DimensionLine h = parseHDistances(canvas);
 		final DimensionLine v = parseVDistances(canvas);
 		return new Grid(h, v);
+	}
+
+	public Parameters parseParameters(AsciiCanvas canvas) {
+		final AsciiCanvas paramSection = canvas.subSection("parameters:");
+		final Map<String, Double> map = new HashMap<String, Double>();
+		for (String line : paramSection) {
+			String[] keyValue = line.split("=");
+			if (keyValue.length == 2) {
+				final String key = keyValue[0].trim();
+				final String value = keyValue[1].trim();
+				map.put(key, Double.valueOf(value));
+			}
+		}
+		return new Parameters(map);
 	}
 }

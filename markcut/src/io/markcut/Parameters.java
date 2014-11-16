@@ -34,4 +34,29 @@ public class Parameters {
 		return new Grid(evaluate(grid.getHorizontalDimensionLine()), evaluate(grid.getVerticalDimensionLine()));
 	}
 
+	@Override
+	public int hashCode() {
+		return params.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Parameters)) {
+			return false;
+		}
+		Parameters other = (Parameters) obj;
+		return params.equals(other.params);
+	}
+
+	@Override
+	public String toString() {
+		return params.toString();
+	}
+
 }

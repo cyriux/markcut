@@ -61,4 +61,10 @@ public class AsciiCanvasTest {
 		assertEquals("^  v", canvas.transposedColumn(1));
 	}
 
+	@Test
+	public void subSection() {
+		final AsciiCanvas canvas = new AsciiCanvas(" blabla", "", "SectionDelimiter      ", " next content");
+		assertEquals(new AsciiCanvas(" next content"), canvas.subSection("SectionDelimiter"));
+	}
+
 }

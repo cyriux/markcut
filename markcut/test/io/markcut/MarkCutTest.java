@@ -23,9 +23,11 @@ public class MarkCutTest {
 		final Point origin = canvas.find('+');
 		final Shape contour = parser.parseShape(canvas, origin);
 
-		final Grid grid = parser.parseGrid(canvas);
+		Grid grid = parser.parseGrid(canvas);
+		final Parameters parameters = parser.parseParameters(canvas);
+		grid = parameters.evaluate(grid);
 		final Shape shape = grid.warp(contour);
-		
+
 		final int margin = 3;
 		final String svg = new SvgRenderer().render(shape.translate(margin, margin));
 
